@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FY25 Performance Impact Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Palette: Energetic & Playful -->
+    <!-- Primary Blue: #2563EB (blue-600) -->
+    <!-- Vibrant Cyan: #06B6D4 (cyan-500) -->
+    <!-- Deep Purple: #7C3AED (violet-600) -->
+    <!-- Background: #F3F4F6 (gray-100) -->
+
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f3f4f6;
+        color: #1f2937;
+      }
+
+      /* Chart Container Styling - Mandatory Requirement */
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%; /* Context-dependent, adjusted in grid */
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+
+      /* Custom Card Utilities */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-left: 5px solid #2563eb;
+      }
+
+      .timeline-line {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background-color: #e5e7eb;
+        transform: translateX(-50%);
+      }
+
+      .timeline-container {
+        position: relative;
+        padding: 10px 0;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      /* New: Timeline Wrapper for Months and Content */
+      .timeline-group {
+        position: relative;
+        display: flex; /* Use flex to align month and items */
+        margin-bottom: 25px;
+        min-height: 50px; /* Ensure space for vertical alignment */
+      }
+
+      /* Month Column (Fixed Width, Black Text) */
+      .timeline-month-col {
+        width: 15%;
+        padding: 10px 20px 0 0;
+        text-align: right;
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #1f2937; /* Black text for months */
+        flex-shrink: 0;
+      }
+
+      /* Items Column */
+      .timeline-items-col {
+        width: 85%;
+        padding-left: 10px;
+        border-left: 4px solid #e5e7eb; /* Light gray line separating month/content */
+        position: relative;
+      }
+
+      /* Individual Timeline Item */
+      .timeline-item {
+        margin-bottom: 20px;
+        position: relative;
+        padding-left: 10px; /* Reduced padding since we removed the marker dot space */
+      }
+
+      /* REMOVING THE DOTS: Removed the ::after pseudo-element controlling the dot markers */
+      /* .timeline-item::after { ... } is now gone */
+
+      .timeline-content {
+        padding: 10px 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #dc2626; /* Default color, overwritten below */
+        width: 100%; /* Reset width calculation */
+      }
+
+      /* Mobile adjustment */
+      @media (max-width: 768px) {
+        .timeline-group {
+          display: block; /* Stack on mobile */
+          padding-left: 0;
+        }
+        .timeline-month-col {
+          display: block;
+          text-align: left;
+          padding-right: 0;
+          padding-bottom: 0;
+          color: #7c3aed; /* Use violet for month titles on mobile */
+        }
+        .timeline-items-col {
+          border-left: none; /* Remove vertical line on mobile */
+          padding-left: 0;
+        }
+        .timeline-item {
+          padding-left: 0; /* Remove padding entirely for mobile */
+          margin-left: 0;
+        }
+        .timeline-content {
+          width: 100%;
+          margin-left: 0;
+          padding: 15px;
+        }
+      }
+
+      /* Specific item coloring based on project focus (Only borders remain) */
+      .focus-cc .timeline-content {
+        border-left-color: #7c3aed;
+      } /* Violet for CC/Product */
+      .focus-dc .timeline-content {
+        border-left-color: #06b6d4;
+      } /* Cyan for DC/Migration */
+      .focus-quality .timeline-content {
+        border-left-color: #2563eb;
+      } /* Blue for Quality/SEO */
+
+      /* Launch Support (Striking Red) */
+      .focus-launch .timeline-content {
+        border-left-color: #ef4444;
+      } /* Red-500 */
+      .launch-support-heading {
+        color: #dc2626;
+        font-weight: bold;
+      }
+
+      /* Remove dot marker coloring rules (since the markers are gone) */
+      .focus-cc .timeline-item::after,
+      .focus-dc .timeline-item::after,
+      .focus-quality .timeline-item::after,
+      .focus-launch .timeline-item::after {
+        /* These selectors remain but are effectively empty or target a non-existent element */
+        content: none;
+      }
+    </style>
+    <!-- 
+        CONFIRMATION: 
+        1. No SVG graphics used. Icons are Unicode or CSS-styled HTML.
+        2. No Mermaid JS used. Diagrams are CSS/HTML.
+        3. Palette: Vibrant Blue/Cyan/Violet (plus Red for urgent launch support).
+    -->
+  </head>
+  <body class="antialiased">
+    <!-- Header / Intro Section -->
+    <header
+      class="bg-gradient-to-r from-violet-600 to-cyan-500 text-white pt-20 pb-24 px-6 relative overflow-hidden shadow-lg"
+    >
+      <div class="max-w-7xl mx-auto relative z-10">
+        <h1 class="text-5xl md:text-6xl font-black tracking-tight mb-4">
+          FY25 REPORT
+        </h1>
+        <p class="text-xl md:text-2xl font-light opacity-90">
+          Uli Steinbach / Global Web Producer
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <span
+            class="bg-white bg-opacity-20 backdrop-blur rounded-full px-4 py-1 text-sm font-bold"
+            >🚀 Consistency</span
+          >
+          <span
+            class="bg-white bg-opacity-20 backdrop-blur rounded-full px-4 py-1 text-sm font-bold"
+            >⚡ Efficiency</span
+          >
+          <span
+            class="bg-white bg-opacity-20 backdrop-blur rounded-full px-4 py-1 text-sm font-bold"
+            >📈 Growth</span
+          >
+        </div>
+      </div>
+      <!-- Abstract CSS Background Decoration -->
+      <div
+        class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 -mb-10 -ml-10 w-48 h-48 bg-cyan-300 opacity-20 rounded-full blur-2xl"
+      ></div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <main
+      class="max-w-7xl mx-auto -mt-16 px-4 md:px-8 pb-20 relative z-20 space-y-16"
+    >
+      <!-- KPI Cards (Goal: Inform) -->
+      <section>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- KPI 1 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-8 text-center transform transition hover:-translate-y-1"
+          >
+            <div class="text-6xl font-black text-violet-600 mb-2">490</div>
+            <div
+              class="text-gray-500 font-bold uppercase tracking-wide text-sm"
+            >
+              Total Tickets Resolved
+            </div>
+            <div class="text-xs text-gray-400 mt-2">
+              Maintained high velocity vs FY24 (476)
+            </div>
+          </div>
+          <!-- KPI 2 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-8 text-center transform transition hover:-translate-y-1"
+          >
+            <div class="text-6xl font-black text-cyan-500 mb-2">17</div>
+            <div
+              class="text-gray-500 font-bold uppercase tracking-wide text-sm"
+            >
+              Launch Rooms Supported
+            </div>
+            <div class="text-xs text-gray-400 mt-2">
+              Incl. Firefly, iPhone Release, MAX
+            </div>
+          </div>
+          <!-- KPI 3 -->
+          <div
+            class="bg-white rounded-xl shadow-lg p-8 text-center transform transition hover:-translate-y-1"
+          >
+            <div class="text-6xl font-black text-blue-600 mb-2">38%</div>
+            <div
+              class="text-gray-500 font-bold uppercase tracking-wide text-sm"
+            >
+              Focus on CC & Firefly
+            </div>
+            <div class="text-xs text-gray-400 mt-2">
+              Successful pivot to high-value product work
+            </div>
+          </div>
+        </div>
+        <div
+          class="mt-8 bg-white p-6 rounded-lg shadow-md border-l-4 border-cyan-500"
+        >
+          <h3 class="text-xl font-bold text-gray-800 mb-2">
+            Executive Summary
+          </h3>
+          <p class="text-gray-600 leading-relaxed">
+            FY25 was characterized by a strategic pivot towards high-visibility
+            product areas while maintaining operational excellence. Despite a
+            high volume workload (490 tickets), the focus successfully shifted
+            towards Creative Cloud (CC) and Firefly initiatives, supported by
+            new efficiency automations and a leadership role in German Geo
+            operations.
+          </p>
+        </div>
+      </section>
+
+      <!-- Workload Analytics (Goal: Compare & Change) -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Chart 1: Trend -->
+        <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col">
+          <h3 class="text-2xl font-bold text-gray-800 mb-2">
+            Workload Evolution
+          </h3>
+          <p class="text-sm text-gray-500 mb-6">
+            A three-year view highlighting the stable total workload alongside
+            the aggressive growth in high-value product areas: Creative Cloud
+            (CC/Firefly) and Document Cloud (DC).
+          </p>
+          <div class="flex-grow">
+            <div class="chart-container">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 2: Distribution -->
+        <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col">
+          <h3 class="text-2xl font-bold text-gray-800 mb-2">
+            FY25 Operational Focus
+          </h3>
+          <p class="text-sm text-gray-500 mb-6">
+            Breakdown of the 490 tickets. Note the dominance of CC/Firefly (38%)
+            and the remaining operational "sprint/fix" load.
+          </p>
+          <div class="flex-grow">
+            <div class="chart-container">
+              <canvas id="distributionChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FY25 Goal Delivery (Goal: Organize) -->
+      <section>
+        <div class="mb-8">
+          <h2
+            class="text-3xl font-bold text-gray-800 border-b-4 border-violet-500 inline-block pb-2"
+          >
+            Delivering on FY25 Goals
+          </h2>
+          <p class="mt-4 text-gray-600">
+            Success was measured across three pillars: Consistency in the German
+            market, Efficiency via automation, and Critical Launch Support.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Consistency Card -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+            <div class="bg-violet-600 h-2 w-full"></div>
+            <div class="p-6">
+              <div class="text-4xl mb-4">🎯</div>
+              <h3 class="text-xl font-bold text-gray-900 mb-2">
+                Consistency & Trust
+              </h3>
+              <p class="text-sm text-gray-500 mb-4 font-semibold">
+                German (DE) Geo Ownership
+              </p>
+              <ul class="space-y-3 text-gray-600 text-sm">
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Led all deliverables for DE market (Customization & QA).
+                </li>
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Created dedicated Slack channel to resolve vendor conflicts.
+                </li>
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Reduced friction on overwrites and missing content.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Efficiency Card -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+            <div class="bg-cyan-500 h-2 w-full"></div>
+            <div class="p-6">
+              <div class="text-4xl mb-4">⚡</div>
+              <h3 class="text-xl font-bold text-gray-900 mb-2">
+                Efficiency & Scale
+              </h3>
+              <p class="text-sm text-gray-500 mb-4 font-semibold">
+                Automation & Process
+              </p>
+              <ul class="space-y-3 text-gray-600 text-sm">
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Built browser extension for on-the-fly URL mods.
+                </li>
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Automated weekly reporting generation.
+                </li>
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Implemented "Tagging" system to speed up vendor alignment.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Launch Support Card -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+            <div class="bg-blue-600 h-2 w-full"></div>
+            <div class="p-6">
+              <div class="text-4xl mb-4">🚀</div>
+              <h3 class="text-xl font-bold text-gray-900 mb-2">
+                Launch Execution
+              </h3>
+              <p class="text-sm text-gray-500 mb-4 font-semibold">
+                13 L-XL Projects
+              </p>
+              <ul class="space-y-3 text-gray-600 text-sm">
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Main POC for Firefly Gen AI & Ps on iPhone launches.
+                </li>
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Managed EMEA Milo Migration (DC Batch 2).
+                </li>
+                <li class="flex items-start">
+                  <span class="text-green-500 mr-2">✓</span>
+                  Ensured zero critical post-launch bugs in DE geo.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FY25 Major Project Timeline (Goal: Change/Organize) -->
+      <section>
+        <h2
+          class="text-3xl font-bold text-gray-800 mb-8 border-b-4 border-cyan-500 inline-block pb-2"
+        >
+          FY25 Major Project Timeline
+        </h2>
+        <p class="mt-4 text-gray-600 mb-8">
+          The continuous flow of high-profile projects, migrations, and
+          geo-specific launches required constant focus and prioritization
+          throughout the year. Color indicates primary focus area:
+          <span class="text-violet-600 font-semibold"
+            >Creative Cloud (CC) / Product Launch</span
+          >,
+          <span class="text-cyan-500 font-semibold"
+            >Document Cloud (DC) / Migration</span
+          >,
+          <span class="text-blue-600 font-semibold"
+            >Quality / Commercial / SEO</span
+          >,
+          <span class="launch-support-heading font-semibold"
+            >Urgent Launch Support (Ad-hoc)</span
+          >.
+        </p>
+
+        <div class="timeline-container relative">
+          <!-- Jan 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Jan 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-dc" data-month="Jan 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    EMEA Milo Migration (DC Batch 2)
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-dc" data-month="Jan 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Take down - Acrobat Standard TwP and Intro Pricing in DE
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-dc" data-month="Jan 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    STE Gen AI Verification.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="Jan 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">
+                    - Launch Room - FY25 CCP20GB/Lr1TB Pricing Action & FX
+                    Adjustment.
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    - A.com removal of FR/DE Early Access Pricing
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feb 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Feb 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="Feb 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">WW | Ps iPhone Release</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Feb 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">MAX Japan 2025 prep</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-quality" data-month="Feb 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Marketing & Commerce megamenu redesign.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="Feb 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">
+                    - A.com Launch Room | Ps on iPhone WW Release.
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    - Firefly and Gen Offers Release Launch Room
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mar 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Mar 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-quality" data-month="Mar 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Summit 2025 Key Feature Updates
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Mar 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Milo Migration Authoring - CC Batch 7I
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Mar 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Creative Cloud Product Page updates.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="Mar 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support</p>
+                  <p class="text-sm text-gray-600">
+                    - Sub3D pricing action Release.
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    - Firefly Premium Individuals
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Apr 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Apr 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-dc" data-month="Apr 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    DC Batch 2 Milo Migration Authoring
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-dc" data-month="Apr 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Core Acrobat pages and Gen AI pages migration
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Apr 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">MAX London 2025.</p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="Apr 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">
+                    - A.com Launch Room | MAX London 2025 WW Release.
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    - [WAR ROOM] Batch 25B ROW Launch Call
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- May 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">May 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="May 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">CCT I2T Page Redesign</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="May 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-600">
+                    Corporate Milo migration Batch 25a - ROW.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="May 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">
+                    - INTL Newsroom: EMEA Sync
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jun 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Jun 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="Jun 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    L2 Photoshop on Android Public Beta Launch
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-quality" data-month="Jun 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">DE - Central Events Hub</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-dc" data-month="Jun 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Frictionless Launch Batch 2a ROW (Single-File Upload).
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="timeline-item focus-launch"
+                data-month="Jun 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">
+                    - Ps Mobile Android Beta Launch
+                  </p>
+                  <p class="text-sm text-gray-600">- Batch 27 Privacy ROW</p>
+                  <p class="text-sm text-gray-600">
+                    - Milo Migration Launch (Batch 18 & 25C)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jul 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Jul 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="Jul 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">ARIA label fix | ROW</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Jul 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    CC Milo Migration Batch 11 - CC Top Level
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-dc" data-month="Jul 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Sign & business/sign full page redesign (Gen AI geos).
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aug 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Aug 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="Aug 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    CCLO Lightning Design/Video pages
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    Go-live for FY25 CCLO ROW Rollout.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="Aug 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">
+                    - ACOM Launch Room for CCLO ROW Rollout
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sep 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Sep 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="Sep 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Premiere on iPhone Launch Updates
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Sep 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    EMEA STE Promo FY25 Q3 Verification
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-quality" data-month="Sep 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Elements 2026 Web launch.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="Sep 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">
+                    - Premiere on iPhone ACOM Launch Room.
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    - L2 Creator Offer Launch Room.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Oct 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Oct 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="Oct 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">MAX LA 2025</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-quality" data-month="Oct 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">DALP Milo Migration</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Oct 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    NON-EN-geos authoring for L1 Ps updates for MAX LA Release.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="timeline-item focus-launch"
+                data-month="Oct 25 Launch Support"
+              >
+                <div class="timeline-content">
+                  <p class="launch-support-heading">Launch Support:</p>
+                  <p class="text-sm text-gray-600">- ACOM MAX Launch Room</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nov 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Nov 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-cc" data-month="Nov 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Global & Intro | Black Friday Verification
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dec 25 -->
+          <div class="timeline-group">
+            <div class="timeline-month-col">Dec 25</div>
+            <div class="timeline-items-col">
+              <div class="timeline-item focus-quality" data-month="Dec 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    DALP Milo Migration Batch 3
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Dec 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    LOC: Camera shots & angles SEO project
+                  </p>
+                </div>
+              </div>
+              <div class="timeline-item focus-cc" data-month="Dec 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">FF SEO Updates</p>
+                </div>
+              </div>
+              <div class="timeline-item focus-quality" data-month="Dec 25">
+                <div class="timeline-content">
+                  <p class="font-bold text-gray-800">
+                    Adobe Connect pages migration.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spacer for visual balance -->
+          <div class="h-8"></div>
+        </div>
+      </section>
+
+      <!-- Growth & Values (Goal: Relationships) -->
+      <section
+        class="bg-gradient-to-br from-white to-blue-50 rounded-2xl p-8 shadow-inner border border-blue-100"
+      >
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">
+          Growth & Values in Action
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <!-- Skills Acquired -->
+          <div>
+            <h3
+              class="text-lg font-bold text-blue-600 uppercase tracking-wider mb-4"
+            >
+              Skills Acquired
+            </h3>
+            <div class="space-y-4">
+              <div class="flex items-center bg-white p-4 rounded-lg shadow-sm">
+                <div
+                  class="bg-violet-100 text-violet-600 p-2 rounded mr-4 font-bold"
+                >
+                  Aa
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-800">Web Accessibility</h4>
+                  <p class="text-xs text-gray-500">
+                    Applied to fix aria-labels & video captions.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center bg-white p-4 rounded-lg shadow-sm">
+                <div
+                  class="bg-cyan-100 text-cyan-600 p-2 rounded mr-4 font-bold"
+                >
+                  &lt;/&gt;
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-800">Web Development</h4>
+                  <p class="text-xs text-gray-500">
+                    Built AI extensions & automation scripts.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center bg-white p-4 rounded-lg shadow-sm">
+                <div
+                  class="bg-blue-100 text-blue-600 p-2 rounded mr-4 font-bold"
+                >
+                  ⚖️
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-800">
+                    Strategic Prioritization
+                  </h4>
+                  <p class="text-xs text-gray-500">
+                    Mastered vendor load balancing for Deep Work.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Values Flow Diagram (CSS based) -->
+          <div class="relative pl-8 border-l-2 border-dashed border-gray-300">
+            <h3
+              class="text-lg font-bold text-violet-600 uppercase tracking-wider mb-4"
+            >
+              Values Impact
+            </h3>
+
+            <div class="mb-6 relative">
+              <div
+                class="absolute -left-[41px] top-1 w-6 h-6 rounded-full bg-cyan-500 border-4 border-white"
+              ></div>
+              <h4 class="font-bold text-gray-800">Create the Future</h4>
+              <p class="text-sm text-gray-600">
+                Leveraged AI to automate mundane reporting, as well as personal
+                productivity.
+              </p>
+            </div>
+
+            <div class="mb-6 relative">
+              <div
+                class="absolute -left-[41px] top-1 w-6 h-6 rounded-full bg-blue-600 border-4 border-white"
+              ></div>
+              <h4 class="font-bold text-gray-800">Own the Outcome</h4>
+              <p class="text-sm text-gray-600">
+                Owned the DE market quality end-to-end across 17 global
+                launches.
+              </p>
+            </div>
+
+            <div class="relative">
+              <div
+                class="absolute -left-[41px] top-1 w-6 h-6 rounded-full bg-violet-600 border-4 border-white"
+              ></div>
+              <h4 class="font-bold text-gray-800">Raise the Bar</h4>
+              <p class="text-sm text-gray-600">
+                Improved site inclusivity via Accessibility training
+                application.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FY26 Future Goals (Goal: Change/Plan) -->
+      <section>
+        <h2 class="text-3xl font-bold text-gray-800 mb-8">
+          FY26 Strategic Outlook
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Goal 1: CC Resilience Backup -->
+          <div
+            class="bg-gray-800 text-white rounded-xl p-6 relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 opacity-10 text-6xl font-black"
+            >
+              01
+            </div>
+            <h3 class="text-xl font-bold text-violet-400 mb-2">
+              CC Resilience Backup
+            </h3>
+            <p class="text-sm text-gray-300 mb-4">
+              Expand expertise and capacity for CC regional lead tasks.
+            </p>
+
+            <div class="mt-4">
+              <div class="flex justify-between text-xs font-bold mb-1">
+                <span>Target: Onboarding</span>
+                <span>Q1/26 Complete</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-violet-400 h-2 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="flex justify-between text-xs font-bold mb-1 mt-3">
+                <span>Target: Coverage periods</span>
+                <span>3 Peaks/PTO</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-violet-400 h-2 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goal 2: Proactive Planning & Foresight -->
+          <div
+            class="bg-gray-800 text-white rounded-xl p-6 relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 opacity-10 text-6xl font-black"
+            >
+              02
+            </div>
+            <h3 class="text-xl font-bold text-cyan-400 mb-2">
+              Proactive Foresight
+            </h3>
+            <p class="text-sm text-gray-300 mb-4">
+              Shift from reactive work by increasing roadmap visibility.
+            </p>
+
+            <div class="mt-4">
+              <div class="flex justify-between text-xs font-bold mb-1">
+                <span>Metric: CC Roadmap Tracking</span>
+                <span>Ongoing</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-cyan-400 h-2 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="flex justify-between text-xs font-bold mb-1 mt-3">
+                <span>Metric: Alignment Check-ins</span>
+                <span>Regular (w/ Wanda)</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-cyan-400 h-2 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goal 3: Advance AI Skills & Certification -->
+          <div
+            class="bg-gray-800 text-white rounded-xl p-6 relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 opacity-10 text-6xl font-black"
+            >
+              03
+            </div>
+            <h3 class="text-xl font-bold text-blue-400 mb-2">
+              AI Skills & Cert
+            </h3>
+            <p class="text-sm text-gray-300 mb-4">
+              Formalize AI expertise and apply skills to practical use cases.
+            </p>
+
+            <div class="mt-4">
+              <div class="flex justify-between text-xs font-bold mb-1">
+                <span>Target: Prompt Engineering Cert.</span>
+                <span>End of FY26</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-blue-400 h-2 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="flex justify-between text-xs font-bold mb-1 mt-3">
+                <span>Target:</span>
+                <span>Increase Productivity</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-blue-400 h-2 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goal 4: Quantitative Work Model & AI Automation -->
+          <div
+            class="bg-gray-800 text-white rounded-xl p-6 relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 p-4 opacity-10 text-6xl font-black"
+            >
+              04
+            </div>
+            <h3 class="text-xl font-bold text-amber-400 mb-2">
+              Quantitative Work Model
+            </h3>
+            <p class="text-sm text-gray-300 mb-4">Data-driven approach.</p>
+
+            <div class="mt-4">
+              <div class="flex justify-between text-xs font-bold mb-1">
+                <span>Metric: Workflows Identified</span>
+                <span>1 Recurring</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-amber-400 h-2 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="flex justify-between text-xs font-bold mb-1 mt-3">
+                <span>Metric: Insights Produced</span>
+                <span>Yearly</span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  class="bg-amber-400 h-2 rounded-full"
+                  style="width: 100%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-8 text-center text-sm">
+      <p>
+        © FY25 Performance Review Artifact | Generated for Data Science &
+        Business Analysis Role
+      </p>
+    </footer>
+
+    <!-- Chart.js Logic -->
+    <script>
+      // Utility: Wrap labels > 16 chars
+      function wrapLabel(str, maxLen) {
+        if (str.length <= maxLen) return str;
+        const words = str.split(" ");
+        const lines = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+          if (currentLine.length + 1 + words[i].length <= maxLen) {
+            currentLine += " " + words[i];
+          } else {
+            lines.push(currentLine);
+            currentLine = words[i];
+          }
+        }
+        lines.push(currentLine);
+        return lines;
+      }
+
+      // Shared Tooltip Config (Mandatory)
+      const sharedTooltipConfig = {
+        callbacks: {
+          title: function (tooltipItems) {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(" ");
+            } else {
+              return label;
+            }
+          },
+        },
+      };
+
+      // Chart 1: Workload Trend (Line/Bar Combo)
+      // Data derived from report:
+      // FY23: Total: 485, CC: 116, DC: 21
+      // FY24: Total: 476, CC: 170, DC: 26
+      // FY25: Total: 490, CC: 186, DC: 69
+      const ctxTrend = document.getElementById("trendChart").getContext("2d");
+      new Chart(ctxTrend, {
+        type: "bar",
+        data: {
+          labels: ["FY23", "FY24", "FY25"],
+          datasets: [
+            {
+              label: "Total Tickets",
+              data: [485, 476, 490],
+              backgroundColor: "#E5E7EB", // Gray
+              order: 3, // Move to order 3
+              borderRadius: 4,
+            },
+            {
+              label: "Creative Cloud & Firefly",
+              data: [116, 170, 186],
+              type: "line",
+              borderColor: "#7C3AED", // Violet
+              backgroundColor: "#7C3AED",
+              borderWidth: 3,
+              tension: 0.3,
+              pointRadius: 6,
+              pointBackgroundColor: "#fff",
+              pointBorderColor: "#7C3AED",
+              order: 1,
+            },
+            {
+              label: "Document Cloud (DC)",
+              data: [21, 26, 69],
+              type: "line",
+              borderColor: "#06B6D4", // Cyan
+              backgroundColor: "#06B6D4",
+              borderWidth: 3,
+              tension: 0.3,
+              pointRadius: 6,
+              pointBackgroundColor: "#fff",
+              pointBorderColor: "#06B6D4",
+              order: 2, // Order 2 for the second line plot
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: sharedTooltipConfig,
+            legend: { position: "bottom" },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: "#f3f4f6" },
+            },
+            x: {
+              grid: { display: false },
+            },
+          },
+        },
+      });
+
+      // Chart 2: FY25 Distribution (Doughnut)
+      // Data: CC(186), DC(69), Cust(60), DX(5).
+      // Total calculated in source: 320 specific + 170 Other/Sprint = 490.
+      const labelsRaw = [
+        "CC & Firefly",
+        "Document Cloud (DC)",
+        "Customisation",
+        "DX / Dxtreme",
+        "Ops, Sprint & Other",
+      ];
+      const labelsWrapped = labelsRaw.map((l) => wrapLabel(l, 16));
+
+      const ctxDist = document
+        .getElementById("distributionChart")
+        .getContext("2d");
+      new Chart(ctxDist, {
+        type: "doughnut",
+        data: {
+          labels: labelsWrapped,
+          datasets: [
+            {
+              data: [186, 69, 60, 5, 170],
+              backgroundColor: [
+                "#7C3AED", // Violet (Primary Focus)
+                "#06B6D4", // Cyan (Growth Area)
+                "#2563EB", // Blue
+                "#9CA3AF", // Gray (DX)
+                "#E5E7EB", // Light Gray (Ops/Other)
+              ],
+              borderWidth: 0,
+              hoverOffset: 10,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "60%",
+          plugins: {
+            tooltip: sharedTooltipConfig,
+            legend: {
+              position: "right",
+              labels: {
+                font: { size: 11 },
+                boxWidth: 12,
+              },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
